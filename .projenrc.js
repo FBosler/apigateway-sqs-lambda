@@ -7,9 +7,15 @@ const project = new awscdk.AwsCdkConstructLibrary({
   name: 'apigateway-sqs-lambda',
   repositoryUrl: 'https://github.com/FBosler/apigateway-sqs-lambda.git',
 
-  // deps: [],                /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
+  deps: ['aws-cdk-lib@^2.1.0', 'constructs@^10.0.5', '@aws-solutions-constructs/core@2.25.0'],
+  description:
+    'Package provides opinionated constrcut for API Gateway with associated SQS queue and Lambda function',
   // devDeps: [],             /* Build dependencies for this module. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  packageName: 'apigateway-sqs-lambda',
+  publishToPypi: {
+    distName: 'apigateway-sqs-lambda',
+    module: 'apigateway_sqs_lambda',
+  },
+  stability: 'experimental',
 });
 project.synth();
