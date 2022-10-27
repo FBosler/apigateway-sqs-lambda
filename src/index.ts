@@ -1,6 +1,6 @@
 import * as defaults from '@aws-solutions-constructs/core';
 import { addProxyMethodToApiResource } from '@aws-solutions-constructs/core';
-import { Aws } from 'aws-cdk-lib';
+import { Aws, Duration } from 'aws-cdk-lib';
 import {
   RestApi,
   RestApiProps,
@@ -70,10 +70,20 @@ export class ApiGatewayToSqsToLambda extends Construct {
       deployDeadLetterQueue: deployDeadLetterQueue,
     });
 
+    const lambdaTimeout = lambdaFunctionProps.timeout
+      ? lambdaFunctionProps.timeout
+      : Duration.seconds(30);
+
     // Setup the queue
     [this.sqsQueue] = defaults.buildQueue(this, `${serviceName}-queue`, {
       deadLetterQueue: this.deadLetterQueue,
-      queueProps: { queueName: `${serviceName}-queue` },
+      queueProps: {
+        queueName: `${serviceName}-queue`,
+        visibilityTimeout:
+          lambdaTimeout > Duration.seconds(30)
+            ? lambdaTimeout
+            : Duration.seconds(30),
+      },
     });
 
     const certificate = Certificate.fromCertificateArn(
