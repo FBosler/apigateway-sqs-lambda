@@ -8,10 +8,7 @@ import {
 } from 'aws-cdk-lib/aws-apigateway';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Role, ServicePrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import {
-  Function as LamdaFunction,
-  FunctionProps as LamdaFunctionProps,
-} from 'aws-cdk-lib/aws-lambda';
+import { Function as LamdaFunction } from 'aws-cdk-lib/aws-lambda';
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { ARecord, RecordTarget, HostedZone } from 'aws-cdk-lib/aws-route53';
 import { ApiGateway as ApiGatewayTarget } from 'aws-cdk-lib/aws-route53-targets';
@@ -26,7 +23,7 @@ export interface ApiGatewayToSqsToLambdaProps {
   readonly domain: string;
   readonly domainCertArn: string;
   readonly route53HostedZoneId: string;
-  readonly lambdaFunctionProps: LamdaFunctionProps;
+  readonly lambdaFunction: LamdaFunction;
   readonly deployDeadLetterQueue?: boolean;
 }
 
@@ -40,7 +37,6 @@ export class ApiGatewayToSqsToLambda extends Construct {
   public readonly apiGatewayCloudWatchRole?: Role;
   public readonly sqsQueue: Queue;
   public readonly deadLetterQueue?: DeadLetterQueue;
-  public readonly lambdaFunction: LamdaFunction;
 
   /**
    * @summary Constructs a new instance of the ApiGatewayToSqsToLambda class.
@@ -62,27 +58,27 @@ export class ApiGatewayToSqsToLambda extends Construct {
       domainCertArn,
       route53HostedZoneId,
       deployDeadLetterQueue,
-      lambdaFunctionProps,
+      lambdaFunction,
     } = props;
 
     // Setup the dead letter queue, if applicable
     this.deadLetterQueue = defaults.buildDeadLetterQueue(this, {
       deployDeadLetterQueue: deployDeadLetterQueue,
+      deadLetterQueueProps: { queueName: `${serviceName}-dl-queue` },
     });
 
-    const lambdaTimeout = lambdaFunctionProps.timeout
-      ? lambdaFunctionProps.timeout
-      : Duration.seconds(30);
+    // this is not very clean, by default lambda has a 3 seconds timeout
+    const lambdaTimeout =
+      lambdaFunction.timeout != Duration.seconds(3)
+        ? lambdaFunction.timeout
+        : Duration.seconds(30);
 
     // Setup the queue
     [this.sqsQueue] = defaults.buildQueue(this, `${serviceName}-queue`, {
       deadLetterQueue: this.deadLetterQueue,
       queueProps: {
         queueName: `${serviceName}-queue`,
-        visibilityTimeout:
-          lambdaTimeout > Duration.seconds(30)
-            ? lambdaTimeout
-            : Duration.seconds(30),
+        visibilityTimeout: lambdaTimeout ? lambdaTimeout : Duration.seconds(30),
       },
     });
 
@@ -148,11 +144,8 @@ export class ApiGatewayToSqsToLambda extends Construct {
       target: RecordTarget.fromAlias(new ApiGatewayTarget(this.apiGateway)),
     });
 
-    this.lambdaFunction = new LamdaFunction(
-      this,
-      `${serviceName}-lambda`,
-      lambdaFunctionProps,
+    lambdaFunction.addEventSource(
+      new SqsEventSource(this.sqsQueue, { reportBatchItemFailures: true }),
     );
-    this.lambdaFunction.addEventSource(new SqsEventSource(this.sqsQueue));
   }
 }

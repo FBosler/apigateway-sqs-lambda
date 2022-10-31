@@ -3,15 +3,23 @@ import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { ApiGatewayToSqsToLambda } from '../src/index';
 // eslint-disable-next-line import/order
-import { Runtime, Code } from 'aws-cdk-lib/aws-lambda';
+import {
+  Runtime,
+  Code,
+  Function as LambdaFunction,
+} from 'aws-cdk-lib/aws-lambda';
 
-const lambdaFunctionProps = {
+const SERVICE_NAME = 'sqs-pusher';
+
+const mockApp = new App();
+const stack = new Stack(mockApp);
+
+const lambdaFunction = new LambdaFunction(stack, 'sqs-pusher-lambda', {
+  functionName: 'sqs-pusher-lambda',
   runtime: Runtime.PYTHON_3_9,
   handler: 'index.handler',
   code: Code.fromAsset(join(__dirname, '..', 'src', 'lambda-handler')),
-};
-
-const SERVICE_NAME = 'sqs-pusher';
+});
 
 const apiGatewayToSqsToLambdaProps = {
   serviceName: SERVICE_NAME,
@@ -19,12 +27,10 @@ const apiGatewayToSqsToLambdaProps = {
   domainCertArn:
     'arn:aws:acm:eu-central-1:1234567852354:certificate/123123sdf-dsf-sdfs-sdsad-sadsdasdasd',
   route53HostedZoneId: 'Z0633005JYFGNZXCT3BN',
-  lambdaFunctionProps: lambdaFunctionProps,
+  lambdaFunction: lambdaFunction,
   deployDeadLetterQueue: true,
 };
 
-const mockApp = new App();
-const stack = new Stack(mockApp);
 new ApiGatewayToSqsToLambda(
   stack,
   'ApiGateway-Sqs-Lambda',
