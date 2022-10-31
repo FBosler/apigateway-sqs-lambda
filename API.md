@@ -107,7 +107,6 @@ Any object.
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.apiGateway">apiGateway</a></code> | <code>aws-cdk-lib.aws_apigateway.RestApi</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.apiGatewayRole">apiGatewayRole</a></code> | <code>aws-cdk-lib.aws_iam.Role</code> | *No description.* |
-| <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.lambdaFunction">lambdaFunction</a></code> | <code>aws-cdk-lib.aws_lambda.Function</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.sqsQueue">sqsQueue</a></code> | <code>aws-cdk-lib.aws_sqs.Queue</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.apiGatewayCloudWatchRole">apiGatewayCloudWatchRole</a></code> | <code>aws-cdk-lib.aws_iam.Role</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.deadLetterQueue">deadLetterQueue</a></code> | <code>aws-cdk-lib.aws_sqs.DeadLetterQueue</code> | *No description.* |
@@ -143,16 +142,6 @@ public readonly apiGatewayRole: Role;
 ```
 
 - *Type:* aws-cdk-lib.aws_iam.Role
-
----
-
-##### `lambdaFunction`<sup>Required</sup> <a name="lambdaFunction" id="apigateway-sqs-lambda.ApiGatewayToSqsToLambda.property.lambdaFunction"></a>
-
-```typescript
-public readonly lambdaFunction: Function;
-```
-
-- *Type:* aws-cdk-lib.aws_lambda.Function
 
 ---
 
@@ -205,7 +194,7 @@ const apiGatewayToSqsToLambdaProps: ApiGatewayToSqsToLambdaProps = { ... }
 | --- | --- | --- |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.domain">domain</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.domainCertArn">domainCertArn</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.lambdaFunctionProps">lambdaFunctionProps</a></code> | <code>aws-cdk-lib.aws_lambda.FunctionProps</code> | *No description.* |
+| <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.lambdaFunction">lambdaFunction</a></code> | <code>aws-cdk-lib.aws_lambda.Function</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.route53HostedZoneId">route53HostedZoneId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.serviceName">serviceName</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.deployDeadLetterQueue">deployDeadLetterQueue</a></code> | <code>boolean</code> | *No description.* |
@@ -232,13 +221,13 @@ public readonly domainCertArn: string;
 
 ---
 
-##### `lambdaFunctionProps`<sup>Required</sup> <a name="lambdaFunctionProps" id="apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.lambdaFunctionProps"></a>
+##### `lambdaFunction`<sup>Required</sup> <a name="lambdaFunction" id="apigateway-sqs-lambda.ApiGatewayToSqsToLambdaProps.property.lambdaFunction"></a>
 
 ```typescript
-public readonly lambdaFunctionProps: FunctionProps;
+public readonly lambdaFunction: Function;
 ```
 
-- *Type:* aws-cdk-lib.aws_lambda.FunctionProps
+- *Type:* aws-cdk-lib.aws_lambda.Function
 
 ---
 
